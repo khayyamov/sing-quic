@@ -106,6 +106,13 @@ func (s *Service[U]) UpdateUsers(userList []U, uuidList [][16]byte, passwordList
 	s.passwordMap = passwordMap
 }
 
+func (s *Service[U]) AddUser(userList []U, uuidList [][16]byte, passwordList []string) {
+	for index := range userList {
+		s.userMap[uuidList[index]] = userList[index]
+		s.passwordMap[userList[index]] = passwordList[index]
+	}
+}
+
 func (s *Service[U]) Start(conn net.PacketConn) error {
 	if !s.quicConfig.Allow0RTT {
 		listener, err := qtls.Listen(conn, s.tlsConfig, s.quicConfig)

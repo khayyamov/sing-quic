@@ -125,6 +125,12 @@ func (s *Service[U]) UpdateUsers(userList []U, passwordList []string) {
 	s.userMap = userMap
 }
 
+func (s *Service[U]) AddUser(userList []U, passwordList []string) {
+	for i, user := range userList {
+		s.userMap[passwordList[i]] = user
+	}
+}
+
 func (s *Service[U]) Start(conn net.PacketConn) error {
 	if s.xplusPassword != "" {
 		conn = NewXPlusPacketConn(conn, []byte(s.xplusPassword))

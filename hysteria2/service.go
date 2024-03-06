@@ -113,6 +113,12 @@ func (s *Service[U]) UpdateUsers(userList []U, passwordList []string) {
 	s.userMap = userMap
 }
 
+func (s *Service[U]) AddUser(userList []U, passwordList []string) {
+	for i, user := range userList {
+		s.userMap[passwordList[i]] = user
+	}
+}
+
 func (s *Service[U]) Start(conn net.PacketConn) error {
 	if s.salamanderPassword != "" {
 		conn = NewSalamanderConn(conn, []byte(s.salamanderPassword))
