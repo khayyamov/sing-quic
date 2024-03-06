@@ -11,9 +11,8 @@ import (
 	"sync"
 	"time"
 
+	hyCC "github.com/khayyamov/sing-quic/hysteria/congestion"
 	"github.com/sagernet/quic-go"
-	"github.com/sagernet/sing-quic"
-	hyCC "github.com/sagernet/sing-quic/hysteria/congestion"
 	"github.com/sagernet/sing/common"
 	"github.com/sagernet/sing/common/auth"
 	"github.com/sagernet/sing/common/baderror"
