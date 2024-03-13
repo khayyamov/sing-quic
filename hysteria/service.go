@@ -131,6 +131,12 @@ func (s *Service[U]) AddUser(userList []U, passwordList []string) {
 	}
 }
 
+func (s *Service[U]) DeleteUser(userList []U, passwordList []string) {
+	for i := range userList {
+		delete(s.userMap, passwordList[i])
+	}
+}
+
 func (s *Service[U]) Start(conn net.PacketConn) error {
 	if s.xplusPassword != "" {
 		conn = NewXPlusPacketConn(conn, []byte(s.xplusPassword))

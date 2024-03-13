@@ -113,6 +113,13 @@ func (s *Service[U]) AddUser(userList []U, uuidList [][16]byte, passwordList []s
 	}
 }
 
+func (s *Service[U]) DeleteUser(userList []U, uuidList [][16]byte) {
+	for index := range userList {
+		delete(s.userMap, uuidList[index])
+		delete(s.passwordMap, userList[index])
+	}
+}
+
 func (s *Service[U]) Start(conn net.PacketConn) error {
 	if !s.quicConfig.Allow0RTT {
 		listener, err := qtls.Listen(conn, s.tlsConfig, s.quicConfig)
