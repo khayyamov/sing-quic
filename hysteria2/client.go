@@ -121,7 +121,7 @@ func (c *Client) offerNew(ctx context.Context) (*clientQUICConnection, error) {
 		packetConn = NewSalamanderConn(packetConn, []byte(c.salamanderPassword))
 	}
 	var quicConn quic.EarlyConnection
-	http3Transport, err := qtls.CreateTransport(packetConn, &quicConn, c.serverAddr, c.tlsConfig, c.quicConfig, true)
+	http3Transport, err := qtls.CreateTransport(packetConn, &quicConn, c.serverAddr, c.tlsConfig, c.quicConfig)
 	if err != nil {
 		udpConn.Close()
 		return nil, err
@@ -166,7 +166,7 @@ func (c *Client) offerNew(ctx context.Context) (*clientQUICConnection, error) {
 		}
 		quicConn.SetCongestionControl(congestion_meta2.NewBbrSender(
 			congestion_meta2.DefaultClock{TimeFunc: timeFunc},
-			congestion_meta2.GetInitialPacketSize(quicConn.RemoteAddr()),
+			congestion.ByteCount(quicConn.Config().InitialPacketSize),
 			congestion.ByteCount(congestion_meta1.InitialCongestionWindow),
 		))
 	}
@@ -263,7 +263,8 @@ func (c *clientQUICConnection) closeWithError(err error) {
 	c.closeOnce.Do(func() {
 		c.connErr = err
 		close(c.connDone)
-		c.quicConn.CloseWithError(0, "")
+		_ = c.quicConn.CloseWithError(0, "")
+		_ = c.rawConn.Close()
 	})
 }
 
